@@ -14,6 +14,7 @@ export class LoginFormComponent implements OnDestroy {
 
   disabledLoginBtn = false;
   showTimer = false;
+  showError = false;
 
   timer = this.waitingTime;
 
@@ -40,6 +41,10 @@ export class LoginFormComponent implements OnDestroy {
           takeUntil(this.destroy$),
           tap( (status: Status) => {
             this.status = status;
+            if(!status.statusOk) {
+              this.showError = true;
+              setTimeout(() => { this.showError = false}, 5*1000);
+            }
           })
         )
         .subscribe()
@@ -47,7 +52,7 @@ export class LoginFormComponent implements OnDestroy {
       this.deactivateForm();
       this.changeTimer();
 
-      setTimeout( this.activateForm, this.waitingTime*1000 );
+      setTimeout( () => {this.activateForm()}, this.waitingTime*1000 );
     }
   }
 

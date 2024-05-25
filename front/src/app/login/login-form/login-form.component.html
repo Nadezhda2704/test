@@ -1,6 +1,6 @@
 <form action="" class="login-form" [formGroup]="loginForm">
   <ng-container *ngIf="status">
-    <p *ngIf="!status.statusOk" class="error">{{status.error}}</p>
+    <p *ngIf="!status.statusOk && showError" class="error">{{status.error}}</p>
     <p *ngIf="status.statusOk" class="name">Текущий пользователь: {{status.name}}</p>
   </ng-container>
 
