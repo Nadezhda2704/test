@@ -17,7 +17,6 @@ export class LoginFormComponent implements OnDestroy {
   showError = false;
 
   timer = this.waitingTime;
-
   status: Status | null = null;
 
   loginForm = new FormGroup({
@@ -28,14 +27,13 @@ export class LoginFormComponent implements OnDestroy {
     return this.loginForm.get('login');
   }
 
-  constructor(private loginService: LoginService) {
+  constructor (private loginService: LoginService) {
   }
 
   send() {
     const login = this.login?.value;
 
-    if(login && login.length > 0) {
-
+    if (login && login.length > 0) {
       this.loginService.sendLogin(login)
         .pipe(
           takeUntil(this.destroy$),
@@ -71,12 +69,14 @@ export class LoginFormComponent implements OnDestroy {
     this.showTimer = true;
 
     const timerId = setInterval( ()=> {
-      if(seconds === 1) {
-        clearInterval(timerId);
+      if (seconds === 1) {
         this.showTimer = false;
+        clearInterval(timerId);
+        this.timer = this.waitingTime;
+      } else {
+        seconds--;
+        this.timer = seconds;
       }
-      this.timer = seconds;
-      seconds--;
     }, 1000)
   }
 
