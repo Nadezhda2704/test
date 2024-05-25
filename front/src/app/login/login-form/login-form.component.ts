@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
-import { LoginService } from '../login.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import {Component, OnDestroy} from '@angular/core';
+import {LoginService, Status} from '../login.service';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {ReplaySubject, takeUntil, tap} from "rxjs";
 
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss']
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnDestroy {
+  private destroy$ = new ReplaySubject(1);
   readonly waitingTime = 60;
 
   disabledLoginBtn = false;
@@ -15,8 +17,10 @@ export class LoginFormComponent {
 
   timer = this.waitingTime;
 
+  status: Status | null = null;
+
   loginForm = new FormGroup({
-    login: new FormControl(''),
+    login: new FormControl('', Validators.required),
   });
 
   get login() {
@@ -27,12 +31,24 @@ export class LoginFormComponent {
   }
 
   send() {
-    console.log('login', this.login?.value);
+    const login = this.login?.value;
 
-    this.deactivateForm();
-    this.changeTimer();
+    if(login && login.length > 0) {
 
-    setTimeout( this.activateForm, this.waitingTime*1000 );
+      this.loginService.sendLogin(login)
+        .pipe(
+          takeUntil(this.destroy$),
+          tap( (status: Status) => {
+            this.status = status;
+          })
+        )
+        .subscribe()
+
+      this.deactivateForm();
+      this.changeTimer();
+
+      setTimeout( this.activateForm, this.waitingTime*1000 );
+    }
   }
 
   deactivateForm() {
@@ -57,5 +73,10 @@ export class LoginFormComponent {
       this.timer = seconds;
       seconds--;
     }, 1000)
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next('');
+    this.destroy$.complete();
   }
 }

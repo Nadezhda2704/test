@@ -1,4 +1,9 @@
 <form action="" class="login-form" [formGroup]="loginForm">
+  <ng-container *ngIf="status">
+    <p *ngIf="!status.statusOk" class="error">{{status.error}}</p>
+    <p *ngIf="status.statusOk" class="name">Текущий пользователь: {{status.name}}</p>
+  </ng-container>
+
   <mat-form-field>
     <mat-label>Логин</mat-label>
     <input
@@ -6,6 +11,9 @@
       name="login"
       formControlName="login"
     >
+    <mat-error *ngIf="login?.hasError('required')">
+      Поле обязательно для заполнения
+    </mat-error>
   </mat-form-field>
 
   <p *ngIf="showTimer" class="timer">
@@ -16,7 +24,7 @@
     mat-button
     type="submit"
     (click)="send()"
-    [disabled]="disabledLoginBtn"
+    [disabled]="!loginForm.valid || disabledLoginBtn"
   >
     Отправить
   </button>

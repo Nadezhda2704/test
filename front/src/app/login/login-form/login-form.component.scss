@@ -4,7 +4,17 @@
   align-items: stretch;
   min-width: 340px;
 
+  .name {
+    text-align: center;
+  }
+
+  .error {
+    color: #f44336;
+    text-align: center;
+  }
+
   .timer {
     color: #5c5c5c;
+    text-align: center;
   }
 }
