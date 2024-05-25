@@ -1,0 +1,23 @@
+<form action="" class="login-form" [formGroup]="loginForm">
+  <mat-form-field>
+    <mat-label>Логин</mat-label>
+    <input
+      matInput
+      name="login"
+      formControlName="login"
+    >
+  </mat-form-field>
+
+  <p *ngIf="showTimer" class="timer">
+    Повторная отправка доступна через {{timer}} сек.
+  </p>
+
+  <button
+    mat-button
+    type="submit"
+    (click)="send()"
+    [disabled]="disabledLoginBtn"
+  >
+    Отправить
+  </button>
+</form>
